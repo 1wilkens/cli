@@ -1,0 +1,28 @@
+[package]
+name = "kapitalist-cli"
+version = "0.1.0"
+authors = ["The kapitalist-app developers"]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/kapitalist-app/cli"
+
+edition = "2018"
+
+[profile.release]
+lto = true
+
+[dependencies]
+kapitalist_types = { git = "https://github.com/kapitalist-app/types", branch = "develop" }
+
+clap = { version = "2.32", default-features = false, features = ["vec_map"] }
+slog = { version = "2.3", features = ["release_max_level_debug"] }
+slog-async = { version = "2.3", default-features = false }
+slog-stdlog = { version = "3.0", default-features = false }
+slog-term = { version = "2.4", default-features = false }
+
+dotenv = "0.13"
+serde = { version = "1.0", features = ["derive"] }
+chrono = { version = "0.4", features = ["serde"] }
+futures = "0.1"
+
+jsonwebtoken = "5.0"
