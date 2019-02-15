@@ -1,7 +1,21 @@
+mod cmd;
+mod config;
+
 use clap::{App, AppSettings, Arg, ArgMatches, SubCommand};
+
+use crate::config::Config;
+
+const SUBCOMMAND_REGISTER: &str = "register";
 
 fn main() {
     let args = build_argparser().get_matches();
+    let log = init_logging(&args);
+
+    let cfg = Config::from_args(&args);
+
+    if let Some(cmd) = args.subcommand_matches(SUBCOMMAND_REGISTER) {
+        cmd::register(log, &cfg, &cmd);
+    }
 }
 
 fn build_argparser<'a, 'b>() -> App<'a, 'b> {
@@ -19,10 +33,14 @@ fn build_argparser<'a, 'b>() -> App<'a, 'b> {
                 .long("debug")
                 .help("Print debug output (implies --verbose)"),
             Arg::with_name("config")
+                .short("c")
                 .long("config")
                 .help("Config file to use")
                 .takes_value(true),
         ])
+        .subcommands(vec![SubCommand::with_name(SUBCOMMAND_REGISTER)
+            .about("Register a new user")
+            .args(&[Arg::with_name("user").required(true)])])
 }
 
 fn init_logging(args: &ArgMatches) -> slog::Logger {
