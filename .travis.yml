@@ -1,0 +1,26 @@
+language: rust
+rust:
+  - stable
+  - beta
+  - nightly
+cache: cargo
+
+sudo: false
+
+# Reduce email flood
+notifications:
+  email:
+    on_success: never
+
+# Only check develop for now
+branches:
+  only:
+    - develop
+
+before_install:
+  - rustup component add clippy
+
+script:
+  - cargo check --verbose
+  - cargo clippy --verbose
+  - cargo test --verbose
