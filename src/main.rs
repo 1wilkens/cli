@@ -1,3 +1,6 @@
+#![warn(clippy::pedantic)]
+
+mod api;
 mod cmd;
 mod config;
 
@@ -6,15 +9,19 @@ use clap::{App, AppSettings, Arg, ArgMatches, SubCommand};
 use crate::config::Config;
 
 const SUBCOMMAND_REGISTER: &str = "register";
+const SUBCOMMAND_LOGIN: &str = "login";
+const SUBCOMMAND_WALLET: &str = "wallet";
+const SUBCOMMAND_TRANSACTION: &str = "transaction";
 
 fn main() {
     let args = build_argparser().get_matches();
-    let log = init_logging(&args);
-
     let cfg = Config::from_args(&args);
+    let log = init_logging(&cfg);
 
     if let Some(cmd) = args.subcommand_matches(SUBCOMMAND_REGISTER) {
         cmd::register(log, &cfg, &cmd);
+    } else if let Some(cmd) = args.subcommand_matches(SUBCOMMAND_WALLET) {
+        // XXX: Add subcommands to wallet
     }
 }
 
@@ -38,17 +45,28 @@ fn build_argparser<'a, 'b>() -> App<'a, 'b> {
                 .help("Config file to use")
                 .takes_value(true),
         ])
-        .subcommands(vec![SubCommand::with_name(SUBCOMMAND_REGISTER)
-            .about("Register a new user")
-            .args(&[Arg::with_name("user").required(true)])])
+        .subcommands(vec![
+            SubCommand::with_name(SUBCOMMAND_REGISTER)
+                .about("Register a new user account")
+                .args(&[Arg::with_name("email")
+                    .help("Email address of the new user")
+                    .required(true)]),
+            SubCommand::with_name(SUBCOMMAND_LOGIN)
+                .about("Login into existing user account")
+                .args(&[Arg::with_name("email")
+                    .help("Email address of the account to login to")
+                    .required(true)]),
+            SubCommand::with_name(SUBCOMMAND_WALLET).about("Manage wallets"),
+            SubCommand::with_name(SUBCOMMAND_TRANSACTION).about("Manage transactions"),
+        ])
 }
 
-fn init_logging(args: &ArgMatches) -> slog::Logger {
+fn init_logging(cfg: &Config) -> slog::Logger {
     use slog::Drain;
 
-    let log_level = if args.is_present("debug") {
+    let log_level = if cfg.debug {
         slog::Level::Debug
-    } else if args.is_present("verbose") {
+    } else if cfg.verbose {
         slog::Level::Info
     } else {
         slog::Level::Error
