@@ -8,7 +8,7 @@ use crate::config::Config;
 static PROMPT_PASSWORD: &str = "Password: ";
 static PROMPT_RETYPE_PASSWORD: &str = "Retype password: ";
 
-pub(crate) fn register(log: Logger, cfg: &Config, args: &ArgMatches) {
+pub fn register(_log: Logger, cfg: &Config, args: &ArgMatches) {
     // unwrap is safe here, because clap validates arguments beforehand
     let user = args.value_of("email").unwrap();
     println!("Please enter a password for {}", user);

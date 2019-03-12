@@ -2,13 +2,13 @@ use kapitalist_types::request::UserCreationRequest;
 use kapitalist_types::response::ErrorResponse;
 use reqwest::{Client, StatusCode, Url};
 
-pub(crate) struct Api {
+pub struct Api {
     base_uri: Url,
     client: Client,
 }
 
 impl Api {
-    pub(crate) fn new(base_uri: &str) -> Option<Self> {
+    pub fn new(base_uri: &str) -> Option<Self> {
         let url = Url::parse(base_uri);
         // XXX: Use `?` here
         let url = if let Ok(u) = url { u } else { return None };
@@ -19,10 +19,10 @@ impl Api {
         })
     }
 
-    pub(crate) fn register(&mut self, email: String, password: String) {
+    pub fn register(&mut self, email: String, password: String) {
         let request = UserCreationRequest {
-            email: email,
-            password: password,
+            email,
+            password,
             name: None,
         };
 
