@@ -9,12 +9,12 @@ use std::{
 };
 
 #[derive(Default, Serialize, Deserialize)]
-pub(crate) struct Config {
-    pub(crate) verbose: bool,
-    pub(crate) debug: bool,
-    pub(crate) base_url: String,
-    pub(crate) email: String,
-    pub(crate) password: String,
+pub struct Config {
+    pub verbose: bool,
+    pub debug: bool,
+    pub base_url: String,
+    pub email: String,
+    pub password: String,
 }
 
 impl Config {
