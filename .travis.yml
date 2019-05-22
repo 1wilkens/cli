@@ -3,8 +3,13 @@ rust:
   - stable
   - beta
   - nightly
-cache: cargo
 
+matrix:
+  allow_failures:
+    - rust: nightly
+  fast_finish: true
+
+cache: cargo
 sudo: false
 
 # Reduce email flood
